@@ -282,7 +282,7 @@ Coverage depends on imports and is not universally live or complete. Minister re
 
 ## Attribution and licence
 
-Built on **[lok-sabha-rag by Sammit Jain](https://github.com/sammitjain/lok-sabha-rag)**. The original MIT copyright and permission notice are preserved in [LICENSE](LICENSE). JanSansad development and extensions: **Aryan Sen**.
+Developed and extended by Aryan Sen. Based on lok-sabha-rag; original MIT attribution retained.
 
 ## Connect
 
