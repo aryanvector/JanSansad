@@ -1,0 +1,229 @@
+[
+  {
+    "id": "union",
+    "name": "Union Government",
+    "level": "union",
+    "url": "https://www.pmindia.gov.in/en/news_updates/portfolios-of-the-union-council-of-ministers-2/"
+  },
+  {
+    "id": "andhra-pradesh",
+    "name": "Andhra Pradesh",
+    "level": "state",
+    "url": "https://apa.neva.gov.in/Home/"
+  },
+  {
+    "id": "arunachal-pradesh",
+    "name": "Arunachal Pradesh",
+    "level": "state",
+    "url": "https://arunachalpradesh.gov.in/cabinet-minister.php"
+  },
+  {
+    "id": "assam",
+    "name": "Assam",
+    "level": "state",
+    "url": "https://assam.gov.in/council-of-ministers"
+  },
+  {
+    "id": "bihar",
+    "name": "Bihar",
+    "level": "state",
+    "url": "https://betastate.bihar.gov.in/iprdwebsite/DyPageView?PageTitleID=9805"
+  },
+  {
+    "id": "chhattisgarh",
+    "name": "Chhattisgarh",
+    "level": "state",
+    "url": "https://cgvidhansabha.gov.in/FrameSet/Cabinet3.html"
+  },
+  {
+    "id": "goa",
+    "name": "Goa",
+    "level": "state",
+    "url": "https://www.goa.gov.in/government/who-is-who/"
+  },
+  {
+    "id": "gujarat",
+    "name": "Gujarat",
+    "level": "state",
+    "url": "https://gad.gujarat.gov.in/Personnel/council-of-ministers-new.htm"
+  },
+  {
+    "id": "haryana",
+    "name": "Haryana",
+    "level": "state",
+    "url": "https://haryanaassembly.gov.in/council-of-ministers/"
+  },
+  {
+    "id": "himachal-pradesh",
+    "name": "Himachal Pradesh",
+    "level": "state",
+    "url": "https://himachal.nic.in/Content/HtmlPage?qs=LdEF%2BAuYkB5RoJeWJ8txbw%3D%3D"
+  },
+  {
+    "id": "jharkhand",
+    "name": "Jharkhand",
+    "level": "state",
+    "url": "https://www.jharkhand.gov.in/"
+  },
+  {
+    "id": "karnataka",
+    "name": "Karnataka",
+    "level": "state",
+    "url": "https://kla.kar.nic.in/council/govtminister.htm"
+  },
+  {
+    "id": "kerala",
+    "name": "Kerala",
+    "level": "state",
+    "url": "https://prd.kerala.gov.in/en/council-of-ministers"
+  },
+  {
+    "id": "madhya-pradesh",
+    "name": "Madhya Pradesh",
+    "level": "state",
+    "url": "https://mp.gov.in/council-of-ministers"
+  },
+  {
+    "id": "maharashtra",
+    "name": "Maharashtra",
+    "level": "state",
+    "url": "https://ecabinet.maharashtra.gov.in/"
+  },
+  {
+    "id": "manipur",
+    "name": "Manipur",
+    "level": "state",
+    "url": "https://assembly.mn.gov.in/council-of-ministers"
+  },
+  {
+    "id": "meghalaya",
+    "name": "Meghalaya",
+    "level": "state",
+    "url": "https://meghalaya.gov.in/meghalaya/index.php/key-contacts/council-of-ministers"
+  },
+  {
+    "id": "mizoram",
+    "name": "Mizoram",
+    "level": "state",
+    "url": "https://tourism.mizoram.gov.in/page/government"
+  },
+  {
+    "id": "nagaland",
+    "name": "Nagaland",
+    "level": "state",
+    "url": "https://www.nagaland.gov.in/ministers"
+  },
+  {
+    "id": "odisha",
+    "name": "Odisha",
+    "level": "state",
+    "url": "https://assembly.odisha.gov.in/CouncilOfMinister.aspx"
+  },
+  {
+    "id": "punjab",
+    "name": "Punjab",
+    "level": "state",
+    "url": "https://pvs.neva.gov.in/"
+  },
+  {
+    "id": "rajasthan",
+    "name": "Rajasthan",
+    "level": "state",
+    "url": "https://gad.rajasthan.gov.in/"
+  },
+  {
+    "id": "sikkim",
+    "name": "Sikkim",
+    "level": "state",
+    "url": "https://www.sikkim.gov.in/mygovernment/whos-who/council-of-ministers"
+  },
+  {
+    "id": "tamil-nadu",
+    "name": "Tamil Nadu",
+    "level": "state",
+    "url": "https://www.tn.gov.in/ministers.php"
+  },
+  {
+    "id": "telangana",
+    "name": "Telangana",
+    "level": "state",
+    "url": "https://www.telangana.gov.in/council-of-ministers/"
+  },
+  {
+    "id": "tripura",
+    "name": "Tripura",
+    "level": "state",
+    "url": "https://tripura.gov.in/council-ministers"
+  },
+  {
+    "id": "uttar-pradesh",
+    "name": "Uttar Pradesh",
+    "level": "state",
+    "url": "https://information.up.gov.in/en/hi-up-ministry.aspx"
+  },
+  {
+    "id": "uttarakhand",
+    "name": "Uttarakhand",
+    "level": "state",
+    "url": "https://cm.uk.gov.in/cabinet-minister/"
+  },
+  {
+    "id": "west-bengal",
+    "name": "West Bengal",
+    "level": "state",
+    "url": "https://wb.gov.in/government-minister.aspx"
+  },
+  {
+    "id": "delhi",
+    "name": "Delhi",
+    "level": "ut",
+    "url": "https://delhi.gov.in/cabinet-ministers"
+  },
+  {
+    "id": "jammu-and-kashmir",
+    "name": "Jammu and Kashmir",
+    "level": "ut",
+    "url": "https://www.jkgad.nic.in/En/minCouncil.aspx"
+  },
+  {
+    "id": "puducherry",
+    "name": "Puducherry",
+    "level": "ut",
+    "url": "https://py.gov.in/ministers"
+  },
+  {
+    "id": "andaman-and-nicobar-islands",
+    "name": "Andaman and Nicobar Islands",
+    "level": "ut",
+    "url": "https://andamannicobar.gov.in/",
+    "administration_only": true
+  },
+  {
+    "id": "chandigarh",
+    "name": "Chandigarh",
+    "level": "ut",
+    "url": "https://chandigarh.gov.in/",
+    "administration_only": true
+  },
+  {
+    "id": "dadra-nagar-haveli-and-daman-diu",
+    "name": "Dadra and Nagar Haveli and Daman and Diu",
+    "level": "ut",
+    "url": "https://ddd.gov.in/",
+    "administration_only": true
+  },
+  {
+    "id": "ladakh",
+    "name": "Ladakh",
+    "level": "ut",
+    "url": "https://ladakh.gov.in/",
+    "administration_only": true
+  },
+  {
+    "id": "lakshadweep",
+    "name": "Lakshadweep",
+    "level": "ut",
+    "url": "https://lakshadweep.gov.in/",
+    "administration_only": true
+  }
+]

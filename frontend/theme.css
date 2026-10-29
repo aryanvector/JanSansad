@@ -1,0 +1,117 @@
+/* Shared theme layer, loaded after component styles. Keep the existing light design. */
+:root { color-scheme: light; }
+.theme-toggle {
+    margin-left: auto;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    min-height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--color-accent); }
+.theme-toggle-track {
+    display: inline-flex;
+    align-items: center;
+    width: 34px;
+    height: 20px;
+    padding: 3px;
+    border-radius: 999px;
+    background: #77867e;
+}
+.theme-toggle-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px #0003;
+    transition: transform .18s ease;
+}
+.theme-toggle[aria-checked="true"] .theme-toggle-track { background: #39815d; }
+.theme-toggle[aria-checked="true"] .theme-toggle-thumb { transform: translateX(14px); }
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --color-bg: #101a16;
+    --color-surface: #19261f;
+    --color-surface-elevated: #223229;
+    --color-border: #3a4e41;
+    --color-border-light: #2c4033;
+    --color-text: #e5ede6;
+    --color-text-muted: #b0c0b5;
+    --color-accent: #9ad5b2;
+    --color-accent-hover: #c0e8ce;
+    --color-accent-subtle: #243e2e;
+    --color-link: #a5dcbc;
+    --color-error: #ff9da8;
+    --shadow-sm: 0 2px 8px #0002;
+    --shadow-md: 0 12px 32px #0005;
+}
+html[data-theme="dark"] :is(.search-form, .answer-section, .person-card,
+    .bill-filters, .bill-card, .minister-card, .bill-secondary, .input-wrapper,
+    .bill-evidence details, .coverage-details[open]) { background: var(--color-surface); }
+html[data-theme="dark"] :is(input, select, textarea, .house-control select,
+    .bill-filters input, .bill-filters select, .passed-filter select,
+    .bill-qa-form input, .bill-qa-form select) {
+    background: #142019;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+html[data-theme="dark"] input::placeholder { color: #a5b5aa; }
+html[data-theme="dark"] :is(.card-expand-toggle, .people-toggle,
+    .profile-details-toggle, .bill-preview span, .bill-timeline li,
+    .bill-qa, .minister-coverage, .minister-initial, .person-avatar, .parliament-art) {
+    background: var(--color-surface-elevated);
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+html[data-theme="dark"] :is(.chip, .chip.secondary, .bill-badge) {
+    background: var(--color-surface-elevated);
+    color: var(--color-text-muted);
+}
+html[data-theme="dark"] :is(.chip.primary, .bill-badge.act,
+    .bill-tabs button[aria-pressed="true"]) {
+    background: var(--color-accent-subtle);
+    color: var(--color-accent);
+    border-color: var(--color-border);
+}
+html[data-theme="dark"] .section-nav a[aria-current="page"] {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+html[data-theme="dark"] .parliament-art span { color: var(--color-text-muted); }
+html[data-theme="dark"] :is(.eyebrow, .coverage-note, .person-label,
+    .person-actions a, .people-source, .career-timeline strong, .bill-qa-status) {
+    color: var(--color-accent);
+}
+html[data-theme="dark"] :is(#submit-btn, button.bill-primary, .profile-refresh, .modal-footer a) {
+    background: #2e6a4b;
+    color: #fff;
+    border-color: #6da782;
+}
+html[data-theme="dark"] :is(#submit-btn:hover, button.bill-primary:hover, .modal-footer a:hover) { background: #367d58; }
+html[data-theme="dark"] :is(.answer-section, .bill-answer-scope) { border-color: var(--color-border); }
+html[data-theme="dark"] .minister-scope-note {
+    background: #3b301e;
+    border-color: #8d7548;
+    color: #f4dbac;
+}
+html[data-theme="dark"] .bill-error { color: var(--color-error); }
+html[data-theme="dark"] .guide-number { color: #d5b784; }
+html[data-theme="dark"] .parliament-art img { filter: brightness(1.6); }
+html[data-theme="dark"] .header-logo { filter: brightness(0) invert(1); }
+html[data-theme="dark"] .modal-overlay { background: #0009; }
+@media (max-width: 420px) {
+    .theme-toggle { gap: 6px; padding: 8px; font-size: 10px; }
+    .header .header-text { min-width: 0; }
+    .header .subtitle { max-width: 140px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .theme-toggle-thumb { transition: none; }
+}

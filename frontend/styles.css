@@ -240,6 +240,8 @@ body {
 /* Options */
 .options {
     display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
     align-items: center;
     justify-content: space-between;
 }
@@ -1286,3 +1288,50 @@ body {
         gap: 0.75rem;
     }
 }
+
+/* Source-linked parliamentary people */
+.house-control { display:flex; gap:8px; align-items:center; font-size:13px; }
+.house-control select { padding:8px; border:1px solid #cbd5e1; border-radius:8px; background:white; color:#243b53; max-width:185px; }
+.coverage-note { font-size:12px; line-height:1.6; color:#566579; margin:12px 0 20px; }
+#coverage-list { padding-inline-start:18px; overflow-wrap:anywhere; }
+#coverage-list li + li { margin-top:6px; }
+.parliamentary-people { padding: 0 20px 16px; }
+.people-toggle, .profile-details-toggle { padding: 9px 13px; border: 1px solid var(--color-border, #cbd5e1); border-radius: 8px; background: var(--color-bg, #fff); color: var(--color-text, #243b53); font: inherit; font-size: 13px; cursor: pointer; }
+.people-toggle:hover, .profile-details-toggle:hover { border-color: #007e87; color: #007e87; }
+.people-toggle:disabled, .profile-details-toggle:disabled { opacity: .65; cursor: wait; }
+.people-panel { margin-top: 14px; }
+.people-panel[hidden], .person-details[hidden] { display: none; }
+.people-record { font-size: 12px; color: var(--color-text-muted, #64748b); margin-bottom: 12px; }
+.people-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap: 14px; }
+.person-card { border: 1px solid var(--color-border, #dce3eb); border-radius: 12px; padding: 16px; min-width: 0; }
+.person-label { color: #007e87; font-size: 10px; font-weight: 700; letter-spacing: 1px; margin-bottom: 12px; }
+.person-header { display: flex; gap: 12px; align-items: center; }
+.person-avatar { width: 66px; height: 76px; flex: 0 0 66px; position: relative; background: #eaf2f5; border-radius: 9px; overflow: hidden; display: grid; place-items: center; color: #007e87; font-size: 24px; }
+.person-avatar img { position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.person-header h4 { margin: 0 0 6px; font-size: 15px; }
+.person-header p { margin: 3px 0; font-size: 12px; }
+.person-role { margin-top: 12px; font-size: 12px; line-height: 1.6; }
+.person-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+.person-actions a, .people-source { font-size: 12px; color: #007e87; }
+.person-note, .person-fetched { font-size: 11px; line-height: 1.6; color: var(--color-text-muted, #64748b); margin-top: 12px; }
+.person-details { margin-top: 14px; border-top: 1px solid var(--color-border, #dce3eb); padding-top: 12px; max-height: 480px; overflow-y: auto; font-size: 12px; }
+.person-details dt { font-weight: 600; margin-top: 8px; }
+.person-details dd { margin: 4px 0 8px; line-height: 1.6; }
+.person-details h5 { font-size: 13px; margin: 14px 0; }
+.career-timeline { padding-left: 18px; border-left: 2px solid #d5eaec; margin-left: 4px; list-style: none; }
+.career-timeline li { margin-bottom: 14px; line-height: 1.5; }
+.career-timeline strong, .career-timeline span { display: block; }
+.career-timeline strong { color: #007e87; margin-bottom: 3px; }
+@media (max-width: 560px) { .people-grid { grid-template-columns: 1fr; } .parliamentary-people { padding: 0 12px 12px; } }
+
+/* Long debate titles remain readable alongside archive metadata. */
+.debate-card .card-header { display: block; }
+.debate-card .card-title { width: 100%; }
+.debate-card .card-chips { margin-top: 10px; justify-content: flex-start; flex-wrap: wrap; }
+
+.person-attribution { margin-top: 10px; font-size: 12px; }
+.person-attribution summary { cursor: pointer; color: var(--color-link); }
+.person-attribution p { margin-top: 8px; line-height: 1.6; overflow-wrap: anywhere; }
+.bill-people { margin: 18px 0; padding: 16px; border: 1px solid var(--color-border); border-radius: 10px; }
+.bill-people h4 { margin-top: 0; }
+.bill-people .person-card p { overflow-wrap: anywhere; }

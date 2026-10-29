@@ -1,5 +1,21 @@
 console.log('app.js loaded');
 const API_BASE = '/api';
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function safeMarkdown(text) {
+    const parsed = new DOMParser().parseFromString(marked.parse(String(text || '')), 'text/html');
+    const allowed = new Set(['P','BR','HR','H1','H2','H3','H4','H5','H6','UL','OL','LI','STRONG','EM','DEL','CODE','PRE','BLOCKQUOTE','TABLE','THEAD','TBODY','TR','TH','TD','A']);
+    for (const el of Array.from(parsed.body.querySelectorAll('*'))) {
+        if (!allowed.has(el.tagName)) { el.replaceWith(parsed.createTextNode(el.textContent || '')); continue; }
+        const href = el.getAttribute('href');
+        for (const attr of Array.from(el.attributes)) el.removeAttribute(attr.name);
+        if (el.tagName === 'A' && href) {
+            try { const url = new URL(href, location.origin); if (['https:','http:'].includes(url.protocol)) { el.setAttribute('href', url.href); el.setAttribute('target','_blank'); el.setAttribute('rel','noopener noreferrer'); } } catch {}
+        }
+    }
+    return parsed.body.innerHTML;
+}
 // LOK_NO kept for any remaining per-lok references; MP list now loads from combined endpoint
 const LOK_NO = 18;
 
@@ -174,7 +190,7 @@ function selectMp(name, trigger) {
     const cursorPos = before.length + name.length;
     elements.queryInput.setSelectionRange(cursorPos, cursorPos);
 
-    // Set as active filter — mutual exclusion with ministry
+    // Set as active filter â€” mutual exclusion with ministry
     mpFilter = name;
     ministryFilter = null;
     renderActiveFilters();
@@ -193,7 +209,7 @@ function selectMinistry(name, trigger) {
     const cursorPos = before.length + name.length;
     elements.queryInput.setSelectionRange(cursorPos, cursorPos);
 
-    // Set as active filter — mutual exclusion with MP
+    // Set as active filter â€” mutual exclusion with MP
     ministryFilter = name;
     mpFilter = null;
     renderActiveFilters();
@@ -305,8 +321,13 @@ function setLoading(loading) {
 
 function showError(message) {
     elements.results.classList.remove('visible');
+    elements.answerSection.classList.remove('visible');
+    elements.answerContent.textContent = '';
+    elements.evidenceCards.textContent = '';
+    hideStatsPanel();
     elements.error.classList.add('visible');
     elements.errorMessage.textContent = message;
+    elements.error.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function hideError() {
@@ -323,14 +344,15 @@ function formatCitations(text, evidenceGroups) {
         const tipParts = [];
         if (group.subject) tipParts.push(group.subject);
         const meta = [];
+        meta.push(group.house === 'rajya_sabha' ? 'Rajya Sabha' : 'Lok Sabha');
         if (group.lok_no) meta.push(`Lok ${group.lok_no}`);
         if (group.session_no) meta.push(`Session ${group.session_no}`);
         if (group.ques_no) meta.push(`Q${group.ques_no}`);
         if (group.type) meta.push(group.type);
         if (group.ministry) meta.push(group.ministry);
-        if (meta.length) tipParts.push(meta.join(' · '));
+        if (meta.length) tipParts.push(meta.join(' Â· '));
         const tipText = tipParts.join('\n');
-        const pdfUrl = group.pdf_url || '';
+        const pdfUrl = group.pdf_url || group.document_url || group.source_url || '';
         return `<sup class="citation" data-index="${num}" data-tip="${tipText.replace(/"/g, '&quot;')}" data-pdf="${pdfUrl}">${match}</sup>`;
     });
 }
@@ -362,9 +384,64 @@ function formatAskedBy(askedBy) {
     return `${names[0]} + ${names.length - 1} more`;
 }
 
-function renderAnswer(answer, evidenceGroups) {
+function renderAnswer(answer, evidenceGroups, coverage = null, sourceScope = null, answerChecks = null) {
     elements.answerSection.classList.add('visible');
-    const html = marked.parse(answer);
+    let checksNote = document.getElementById('answer-checks-note');
+    if (!checksNote) {
+        checksNote = document.createElement('details');
+        checksNote.id = 'answer-checks-note';
+        checksNote.className = 'comparison-source-note';
+        elements.answerContent.before(checksNote);
+    }
+    checksNote.replaceChildren();
+    checksNote.hidden = !answerChecks;
+    if (answerChecks) {
+        const needsReview = answerChecks.status === 'review_needed';
+        checksNote.open = needsReview;
+        const summary = document.createElement('summary');
+        summary.textContent = needsReview ? 'Answer needs review â€” some figures or claims could not be supported' : 'Limited automated checks completed â€” verify important claims against the sources';
+        checksNote.appendChild(summary);
+        const description = document.createElement('p');
+        description.textContent = answerChecks.limitations;
+        checksNote.appendChild(description);
+        if (needsReview) {
+            const list = document.createElement('ul');
+            for (const issue of answerChecks.issues || []) {
+                const item = document.createElement('li');
+                item.textContent = `${issue.message} Claim: ${issue.claim}`;
+                list.appendChild(item);
+            }
+            checksNote.appendChild(list);
+        }
+    }
+    let requestNote = document.getElementById('requested-source-note');
+    if (!requestNote) {
+        requestNote = document.createElement('p');
+        requestNote.id = 'requested-source-note';
+        requestNote.className = 'comparison-source-note';
+        elements.answerContent.before(requestNote);
+    }
+    requestNote.hidden = !sourceScope;
+    if (sourceScope) {
+        const dates = (sourceScope.requested_dates || []).map(d => new Date(`${d}T00:00:00`).toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'}));
+        const labels = [...dates, ...(sourceScope.anchors || []), ...(sourceScope.schemes || [])];
+        const missing = [...(sourceScope.missing_dates || []), ...(sourceScope.missing_anchors || [])];
+        requestNote.textContent = `Source constraints: ${labels.join(' Â· ')}. ${missing.length ? `Missing matches: ${missing.join(', ')}. ` : ''}Check the cited passages for each figure and its reporting period.`;
+    }
+    let scopeNote = document.getElementById('comparison-source-note');
+    if (!scopeNote) {
+        scopeNote = document.createElement('p');
+        scopeNote.id = 'comparison-source-note';
+        scopeNote.className = 'comparison-source-note';
+        elements.answerContent.before(scopeNote);
+    }
+    scopeNote.hidden = !coverage;
+    if (coverage) {
+        const counts = Object.entries(coverage.records_in_context || {}).map(([year, count]) => `${year}: ${count} records`).join(' Â· ');
+        const missing = coverage.missing_years?.length ? ` Missing evidence for: ${coverage.missing_years.join(', ')}.` : '';
+        scopeNote.textContent = `Sources by parliamentary record year â€” ${counts}.${missing} Figures may refer to different reporting periods; check the dates in the answer.`;
+    }
+    const html = safeMarkdown(answer);
     elements.answerContent.innerHTML = formatCitations(html, evidenceGroups);
 
     elements.answerContent.querySelectorAll('.citation').forEach(el => {
@@ -420,7 +497,7 @@ function showSynthesizingIndicator() {
         render();
     }, 2000);
 
-    // Animate dots 1 → 2 → 3 → 1 every 500ms
+    // Animate dots 1 â†’ 2 â†’ 3 â†’ 1 every 500ms
     const dotTimer = setInterval(() => {
         dots = dots >= 3 ? 1 : dots + 1;
         render();
@@ -488,7 +565,7 @@ function renderStatsProgressive(stats, kind) {
     `;
     elements.statsContent.appendChild(headerEl);
 
-    // Phase 2: Bar chart — top ministries (for MP) or top MPs (for ministry)
+    // Phase 2: Bar chart â€” top ministries (for MP) or top MPs (for ministry)
     const barItems = isMp ? stats.top_ministries : stats.top_mps;
     const barLabel = isMp ? 'Top Ministries' : 'Top MPs';
     const barNameKey = isMp ? 'ministry' : 'mp_name';
@@ -548,7 +625,7 @@ function groupByQuestionFlat(evidence) {
     const groups = new Map();
 
     for (const item of evidence) {
-        const key = `${item.lok_no}-${item.session_no}-${item.type || ''}-${item.ques_no}`;
+        const key = item.question_id || `${item.house || "lok_sabha"}-${item.lok_no}-${item.session_no}-${item.type || ""}-${item.ques_no}`;
         if (!groups.has(key)) {
             groups.set(key, {
                 ...item,
@@ -575,6 +652,17 @@ function groupByQuestionFlat(evidence) {
 
 function buildChips(group) {
     const chips = [];
+    if (group.content_type === "debate") {
+        chips.push({label:"Debate",type:"primary"});
+        chips.push({label:group.transcript_status === "indexed_text" ? "Speech text match" : "Catalogue match",type:"default"});
+        if(group.debate_category)chips.push({label:group.debate_category,type:"default"});
+        if(group.original_pages)chips.push({label:`Original pages ${group.original_pages}`,type:"default"});
+    }
+    if (group.house === "rajya_sabha") {
+        chips.push({label:"Rajya Sabha",type:"default"});
+        if (group.question_id) chips.push({label:`Dataset record ${group.question_id.split('_').pop()}`,type:'default'});
+    }
+    if (group.date) chips.push({label:group.date,type:"default"});
 
     if (group.lok_no) {
         chips.push({ label: `Lok Sabha ${group.lok_no}`, type: 'default' });
@@ -600,7 +688,7 @@ function buildMetaText(group) {
 
     const askedBy = formatAskedBy(group.asked_by);
     if (askedBy) {
-        parts.push(`Asked by: ${askedBy}`);
+        parts.push(`${group.content_type === "debate" ? "Participants" : "Asked by"}: ${askedBy}`);
     }
 
     return parts;
@@ -609,7 +697,7 @@ function buildMetaText(group) {
 function buildSecondaryChips(group) {
     const chips = [];
 
-    chips.push({ label: `${(group.best_score * 100).toFixed(0)}% match`, type: 'secondary' });
+    chips.push({ label: group.retrieval_method === 'date_anchor_passages' ? 'Scoped source' : group.retrieval_method === 'rank_fusion' ? 'Ranked result' : `${(group.best_score * 100).toFixed(0)}% match`, type: 'secondary' });
 
     if (group.chunks.length > 1) {
         chips.push({ label: `${group.chunks.length} parts`, type: 'secondary' });
@@ -628,7 +716,7 @@ function buildSecondaryChips(group) {
 function renderChipsHTML(chips) {
     return chips.map(c => {
         const cls = c.type === 'primary' ? 'chip primary' : c.type === 'secondary' ? 'chip secondary' : 'chip';
-        return `<span class="${cls}">${c.label}</span>`;
+        return `<span class="${cls}">${escapeHtml(c.label)}</span>`;
     }).join('');
 }
 
@@ -668,6 +756,13 @@ function getCombinedText(chunks) {
 // Fetch the absolute leading C chunks for a question from the backend.
 // Uses a module-level cache so repeated opens/expands don't re-fetch.
 async function fetchQuestionText(group, c) {
+    // AI citations show the exact passages supplied to the generator.
+    if (typeof group.group_index === 'number') {
+        return getCombinedText(group.chunks || []);
+    }
+    if (group.content_type === 'debate' && group.transcript_status === 'indexed_text') {
+        return (group.chunks || []).map(chunk => chunk.text || '').join('\n\n');
+    }
     const key = group.question_id
         ? `${group.question_id}-c${c}`
         : `${group.lok_no}-${group.session_no}-${group.type || ''}-${group.ques_no}-c${c}`;
@@ -714,11 +809,12 @@ function renderEvidenceCards(data, isGrouped) {
 
 function renderEvidenceCardsGrouped(evidenceGroups) {
     const totalChunks = evidenceGroups.reduce((sum, g) => sum + g.chunks.length, 0);
-    elements.evidenceCount.textContent = `(${evidenceGroups.length} questions from ${totalChunks} chunks)`;
+    elements.evidenceCount.textContent = `(${evidenceGroups.length} records from ${totalChunks} chunks)`;
 
     evidenceGroups.forEach((group) => {
         const card = document.createElement('div');
         card.className = 'evidence-card';
+        if (group.content_type === 'debate') card.classList.add('debate-card');
         card.dataset.groupIndex = group.group_index;
 
         const chips = buildChips(group);
@@ -727,23 +823,23 @@ function renderEvidenceCardsGrouped(evidenceGroups) {
 
         // In CLEAN_CARD_TEXT mode, card-text is lazy-loaded on first expand.
         // In original mode, pre-render now so expand is instant.
-        const preRendered = CLEAN_CARD_TEXT ? '' : marked.parse(getCombinedText(group.chunks));
+        const preRendered = CLEAN_CARD_TEXT ? '' : safeMarkdown(getCombinedText(group.chunks));
 
         card.innerHTML = `
             <div class="card-main">
                 <div class="card-header">
-                    <div class="card-title">${group.subject || 'Parliamentary Question'}</div>
+                    <div class="card-title">${escapeHtml(group.subject || 'Parliamentary record')}</div>
                     <div class="card-chips">${renderChipsHTML(chips)}</div>
                 </div>
-                <div class="card-meta">${metaText.map(t => `<span>${t}</span>`).join('')}</div>
+                <div class="card-meta">${metaText.map(t => `<span>${escapeHtml(t)}</span>`).join('')}</div>
                 <div class="card-footer">
                     <div class="card-secondary">${renderChipsHTML(secondaryChips)}</div>
-                    ${group.pdf_url ? `<a href="${group.pdf_url}" target="_blank" class="card-link" onclick="event.stopPropagation()">View PDF</a>` : ''}
+                    ${(group.pdf_url || group.document_url || group.source_url) ? `<a href="${escapeHtml(group.pdf_url || group.document_url || group.source_url)}" target="_blank" rel="noopener noreferrer" class="card-link" onclick="event.stopPropagation()">${group.pdf_url ? "View PDF" : group.document_url ? "View document" : group.content_type === "debate" ? "Official record" : "Dataset source"}</a>` : ""}
                 </div>
             </div>
             <div class="card-expand">
                 <button class="card-expand-toggle" data-card="${group.group_index}">
-                    <span>Show full text</span>
+                    <span>Show source text</span>
                     <span class="arrow">&#9662;</span>
                 </button>
                 <div class="card-text" id="card-text-g${group.group_index}">${preRendered}</div>
@@ -765,60 +861,62 @@ function renderEvidenceCardsGrouped(evidenceGroups) {
                 textEl.innerHTML = '<div class="card-text-loading">Loading\u2026</div>';
                 textEl.classList.add('visible');
                 toggleBtn.classList.add('expanded');
-                toggleBtn.querySelector('span:first-child').textContent = 'Hide full text';
+                toggleBtn.querySelector('span:first-child').textContent = 'Hide source text';
 
                 if (!textEl.dataset.loading) {
                     textEl.dataset.loading = '1';
                     const text = await fetchQuestionText(group, maxC);
                     textEl.innerHTML = text
-                        ? marked.parse(text)
+                        ? safeMarkdown(text)
                         : '<em style="color:var(--color-text-muted)">No content found for this question.</em>';
                     textEl.dataset.loaded = '1';
                     delete textEl.dataset.loading;
                 }
             } else {
-                // Toggle: collapsing, or already loaded — just flip visibility
+                // Toggle: collapsing, or already loaded â€” just flip visibility
                 textEl.classList.toggle('visible');
                 toggleBtn.classList.toggle('expanded');
                 toggleBtn.querySelector('span:first-child').textContent =
-                    textEl.classList.contains('visible') ? 'Hide full text' : 'Show full text';
+                    textEl.classList.contains('visible') ? 'Hide source text' : 'Show source text';
             }
         });
 
         elements.evidenceCards.appendChild(card);
+        attachParliamentaryProfiles(card, group);
     });
 }
 
 function renderEvidenceCardsFlat(evidence) {
     const grouped = groupByQuestionFlat(evidence);
-    elements.evidenceCount.textContent = `(${grouped.length} questions from ${evidence.length} chunks)`;
+    elements.evidenceCount.textContent = `(${grouped.length} records from ${evidence.length} chunks)`;
 
     grouped.forEach((group, idx) => {
         const card = document.createElement('div');
         card.className = 'evidence-card';
+        if (group.content_type === 'debate') card.classList.add('debate-card');
         card.dataset.indices = JSON.stringify(group.indices);
 
         const chips = buildChips(group);
         const metaText = buildMetaText(group);
         const secondaryChips = buildSecondaryChips(group);
 
-        const preRendered = CLEAN_CARD_TEXT ? '' : marked.parse(getCombinedText(group.chunks));
+        const preRendered = CLEAN_CARD_TEXT ? '' : safeMarkdown(getCombinedText(group.chunks));
 
         card.innerHTML = `
             <div class="card-main">
                 <div class="card-header">
-                    <div class="card-title">${group.subject || 'Parliamentary Question'}</div>
+                    <div class="card-title">${escapeHtml(group.subject || 'Parliamentary record')}</div>
                     <div class="card-chips">${renderChipsHTML(chips)}</div>
                 </div>
-                <div class="card-meta">${metaText.map(t => `<span>${t}</span>`).join('')}</div>
+                <div class="card-meta">${metaText.map(t => `<span>${escapeHtml(t)}</span>`).join('')}</div>
                 <div class="card-footer">
                     <div class="card-secondary">${renderChipsHTML(secondaryChips)}</div>
-                    ${group.pdf_url ? `<a href="${group.pdf_url}" target="_blank" class="card-link" onclick="event.stopPropagation()">View PDF</a>` : ''}
+                    ${(group.pdf_url || group.document_url || group.source_url) ? `<a href="${escapeHtml(group.pdf_url || group.document_url || group.source_url)}" target="_blank" rel="noopener noreferrer" class="card-link" onclick="event.stopPropagation()">${group.pdf_url ? "View PDF" : group.document_url ? "View document" : group.content_type === "debate" ? "Official record" : "Dataset source"}</a>` : ""}
                 </div>
             </div>
             <div class="card-expand">
                 <button class="card-expand-toggle" data-card="${idx}">
-                    <span>Show full text</span>
+                    <span>Show source text</span>
                     <span class="arrow">&#9662;</span>
                 </button>
                 <div class="card-text" id="card-text-${idx}">${preRendered}</div>
@@ -839,13 +937,13 @@ function renderEvidenceCardsFlat(evidence) {
                 textEl.innerHTML = '<div class="card-text-loading">Loading\u2026</div>';
                 textEl.classList.add('visible');
                 toggleBtn.classList.add('expanded');
-                toggleBtn.querySelector('span:first-child').textContent = 'Hide full text';
+                toggleBtn.querySelector('span:first-child').textContent = 'Hide source text';
 
                 if (!textEl.dataset.loading) {
                     textEl.dataset.loading = '1';
                     const text = await fetchQuestionText(group, maxC);
                     textEl.innerHTML = text
-                        ? marked.parse(text)
+                        ? safeMarkdown(text)
                         : '<em style="color:var(--color-text-muted)">No content found for this question.</em>';
                     textEl.dataset.loaded = '1';
                     delete textEl.dataset.loading;
@@ -854,18 +952,19 @@ function renderEvidenceCardsFlat(evidence) {
                 textEl.classList.toggle('visible');
                 toggleBtn.classList.toggle('expanded');
                 toggleBtn.querySelector('span:first-child').textContent =
-                    textEl.classList.contains('visible') ? 'Hide full text' : 'Show full text';
+                    textEl.classList.contains('visible') ? 'Hide source text' : 'Show source text';
             }
         });
 
         elements.evidenceCards.appendChild(card);
+        attachParliamentaryProfiles(card, group);
     });
 }
 
 // --- Modal ---
 
 async function openModal(group) {
-    elements.modalTitle.textContent = group.subject || 'Parliamentary Question';
+    elements.modalTitle.textContent = group.subject || 'Parliamentary record';
 
     const chips = buildChips(group);
     const metaText = buildMetaText(group);
@@ -874,20 +973,20 @@ async function openModal(group) {
     let chipsHTML = renderChipsHTML(chips);
     if (metaText.length > 0) {
         chipsHTML += `<span class="chip-divider"></span>`;
-        chipsHTML += metaText.map(t => `<span class="chip">${t}</span>`).join('');
+        chipsHTML += metaText.map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('');
     }
     chipsHTML += `<span class="chip-divider"></span>`;
     chipsHTML += renderChipsHTML(secondaryChips);
 
     elements.modalChips.innerHTML = chipsHTML;
 
-    if (group.pdf_url) {
-        elements.modalFooter.innerHTML = `<a href="${group.pdf_url}" target="_blank">View Original PDF &rarr;</a>`;
+    if (group.pdf_url || group.document_url || group.source_url) {
+        elements.modalFooter.innerHTML = `<a href="${escapeHtml(group.pdf_url || group.document_url || group.source_url)}" target="_blank" rel="noopener noreferrer">${group.pdf_url ? "View Original PDF" : group.document_url ? "View original document" : group.content_type === "debate" ? "Official record" : "Dataset source"} &rarr;</a>`;
     } else {
         elements.modalFooter.innerHTML = '';
     }
 
-    // Open modal immediately — don't wait for content
+    // Open modal immediately â€” don't wait for content
     elements.modal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
@@ -897,11 +996,11 @@ async function openModal(group) {
         elements.modalBody.innerHTML = '<div class="card-text-loading">Loading\u2026</div>';
         const text = await fetchQuestionText(group, maxC);
         elements.modalBody.innerHTML = text
-            ? marked.parse(text)
+            ? safeMarkdown(text)
             : '<em style="color:var(--color-text-muted)">No content found for this question.</em>';
     } else {
         const combinedText = getCombinedText(group.chunks);
-        elements.modalBody.innerHTML = marked.parse(combinedText);
+        elements.modalBody.innerHTML = safeMarkdown(combinedText);
     }
 }
 
@@ -927,6 +1026,8 @@ async function handleSubmit(e) {
 
     const payload = {
         query: query,
+        house: document.getElementById("house-select").value,
+        content_type: document.getElementById("content-select").value,
         top_k: topK,
     };
 
@@ -945,6 +1046,7 @@ async function handleSubmit(e) {
     }
 
     setLoading(true);
+    let requestFailed = false;
     elements.results.classList.remove('visible');
     elements.answerSection.classList.remove('visible');
     hideStatsPanel();
@@ -955,9 +1057,9 @@ async function handleSubmit(e) {
     }
 
     // Fire stats fetch in parallel if a filter is active (regardless of AI mode)
-    const shouldFetchStats = !!(mpFilter || ministryFilter);
+    const shouldFetchStats = payload.house === "lok_sabha" && payload.content_type === "qa" && !!(mpFilter || ministryFilter);
     let statsPromise = null;
-    if (mpFilter) {
+    if (shouldFetchStats && mpFilter) {
         statsPromise = fetch(`${API_BASE}/mp-stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -967,12 +1069,12 @@ async function handleSubmit(e) {
         .catch(() => null);
 
         statsPromise.then(statsData => {
-            if (statsData) {
+            if (statsData && !requestFailed) {
                 elements.results.classList.add('visible');
                 renderStatsProgressive(statsData, 'mp');
             }
         });
-    } else if (ministryFilter) {
+    } else if (shouldFetchStats && ministryFilter) {
         statsPromise = fetch(`${API_BASE}/ministry-stats`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -982,7 +1084,7 @@ async function handleSubmit(e) {
         .catch(() => null);
 
         statsPromise.then(statsData => {
-            if (statsData) {
+            if (statsData && !requestFailed) {
                 elements.results.classList.add('visible');
                 renderStatsProgressive(statsData, 'ministry');
             }
@@ -1008,7 +1110,7 @@ async function handleSubmit(e) {
 
         if (useAI) {
             hideSynthesizingIndicator();
-            renderAnswer(data.answer, data.evidence_groups);
+            renderAnswer(data.answer, data.evidence_groups, data.period_coverage, data.source_scope, data.answer_checks);
             // If stats weren't fetched in parallel (edge case), use inline data
             if (!shouldFetchStats && data.mp_stats) {
                 renderStatsProgressive(data.mp_stats, 'mp');
@@ -1025,6 +1127,7 @@ async function handleSubmit(e) {
             renderEvidenceCards(data.results, false);
         }
     } catch (err) {
+        requestFailed = true;
         hideSynthesizingIndicator();
         showError(err.message);
     } finally {
@@ -1103,6 +1206,58 @@ document.addEventListener('keydown', (e) => {
 
 // --- Init ---
 
-elements.queryInput.focus();
-loadMpList();
-loadMinistryList();
+if (!document.documentElement.classList.contains('opening-pending')) elements.queryInput.focus({ preventScroll: true });
+async function refreshHouse() {
+    const house = document.getElementById('house-select').value;
+    const contentType = document.getElementById('content-select').value;
+    clearFilters(); hideStatsPanel();
+    elements.results.classList.remove('visible');
+    mpList = []; ministryList = [];
+    const note = document.getElementById('coverage-note');
+    document.getElementById('coverage-list')?.replaceChildren();
+    note.textContent = house === 'lok_sabha' ? 'Lok Sabha corpus selected. Activity statistics cover Lok Sabha only.' : 'Loading Rajya Sabha pilot coverageâ€¦';
+    try {
+        const [options, coverage] = await Promise.all([
+            fetch(`${API_BASE}/corpus-options?house=${house}&content_type=${contentType}`).then(r=>r.json()),
+            fetch(`${API_BASE}/corpus-coverage`).then(r=>r.json())
+        ]);
+        if (document.getElementById('house-select').value !== house || document.getElementById('content-select').value !== contentType) return;
+        mpList = options.members; ministryList = options.ministries;
+        renderCoverageInventory(coverage, house, contentType);
+
+    } catch {
+        note.textContent = 'Coverage information unavailable. Please refresh.';
+        document.getElementById('coverage-list')?.replaceChildren();
+    }
+}
+document.getElementById('house-select').addEventListener('change', refreshHouse);
+document.getElementById('content-select').addEventListener('change',()=>{
+    refreshHouse();
+});
+refreshHouse();
+
+fetch(`${API_BASE}/ai-status`).then(r=>r.json()).then(config=>{
+    const provider=config.provider === 'gemini' ? 'Gemini' : 'OpenAI';
+    document.getElementById('ai-provider-status').textContent=config.configured
+        ? `AI provider: ${provider} Â· ${config.model}. Server credentials configured; availability depends on provider quota.`
+        : `AI provider: ${provider}. Server credentials are missing; document search remains available.`;
+}).catch(()=>{document.getElementById('ai-provider-status').textContent='AI configuration status is unavailable.';});
+
+async function updateDebateProgress(){
+    const target=document.getElementById('debate-index-status');
+    if(document.getElementById('content-select').value === 'qa'){target.textContent='';return;}
+    try{
+        const coverage=await fetch(`${API_BASE}/corpus-coverage`).then(r=>r.json());
+        const selected=document.getElementById('house-select').value;
+        renderCoverageInventory(coverage, selected, document.getElementById('content-select').value);
+        const houses=selected === 'both' ? ['lok_sabha','rajya_sabha'] : [selected];
+        target.textContent=houses.map(h=>{
+            const count=coverage.debate_fulltext?.houses?.[h]?.indexed || 0;
+            const total=(h === 'lok_sabha' ? coverage.lok_sabha_debates : coverage.debates)?.records || 0;
+            return `${h === 'lok_sabha' ? 'Lok Sabha' : 'Rajya Sabha'} speech text indexed: ${count.toLocaleString()} / ${total.toLocaleString()} catalogue records`;
+        }).join(' Â· ')+`. Index job: ${coverage.debate_fulltext?.job?.status || 'not running'}. Full-text coverage is incremental; metadata search remains available.`;
+    }catch{target.textContent='Full-text indexing progress is currently unavailable.';}
+}
+document.getElementById('content-select').addEventListener('change',updateDebateProgress);
+document.getElementById('house-select').addEventListener('change',updateDebateProgress);
+setInterval(updateDebateProgress,20000);

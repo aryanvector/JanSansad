@@ -10,7 +10,12 @@ from lok_sabha_rag.core.retriever import Retriever, EvidenceItem, EvidenceGroup
 from lok_sabha_rag.core.stats import get_mp_stats, format_stats_for_llm, get_ministry_stats, format_ministry_stats_for_llm
 
 _LOG_CHUNKS = os.environ.get("RAG_LOG_CHUNKS", "").strip() == "1"
-from lok_sabha_rag.core.synthesizer import Synthesizer, extract_citations
+from lok_sabha_rag.core.synthesizer import Synthesizer, extract_citations, validate_citations
+from lok_sabha_rag.core.ai_provider import GenerationError
+from lok_sabha_rag.core.temporal_retrieval import retrieve_comparison, period_coverage, coverage_context
+from lok_sabha_rag.core.scoped_retrieval import retrieve_scoped, scope_context
+from lok_sabha_rag.core.answer_checks import generate_checked
+from lok_sabha_rag.core.relevance import relevant_items, NO_RESULTS
 from lok_sabha_rag.api.schemas import (
     SynthesizeRequest,
     SynthesizeResponse,
@@ -76,30 +81,46 @@ def _log_retrieval(
 
 @router.post("/synthesize", response_model=SynthesizeResponse)
 def synthesize(req: SynthesizeRequest) -> SynthesizeResponse:
-    items = retriever.search(
+    filters = dict(lok=req.lok, session=req.session, ministry=req.ministry,
+        mp_names=req.mp_names, house=req.house, content_type=req.content_type)
+    scoped = retrieve_scoped(retriever, req.query, req.top_k, req.top_n,
+        req.chunks_per_question, **filters)
+    source_scope = None
+    if scoped is not None:
+        items, source_scope = scoped
+        years = []
+    else:
+        items, years = retrieve_comparison(retriever,
         query=req.query,
         top_k=req.top_k,
         lok=req.lok,
         session=req.session,
         ministry=req.ministry,
         mp_names=req.mp_names,
-    )
+        house=req.house,
+        content_type=req.content_type,
+        )
 
+    items = relevant_items(req.query, items)
     if not items:
         raise HTTPException(
             status_code=404,
-            detail="No relevant evidence found. Try broadening your search or removing filters.",
+            detail=(f"No matching indexed evidence was retrieved for the requested comparison topics, answer dates and Houses with the selected filters. Missing sides: {[(s['date'], s['house'], s['topic']) for s in source_scope['comparison_slots'] if s['status'] != 'matched']}. This does not establish that the requested records do not exist."
+                    if source_scope and source_scope.get('comparison_slots') else
+                    f"No matching indexed passages found for the requested answer dates {source_scope['requested_dates']} and named anchors {source_scope['anchors']} with the selected filters. This does not establish that the date or place is wrong."
+                    if source_scope else f"No matching Q&A evidence found for the requested record years {', '.join(map(str, years))}. Try a different period or remove filters."
+                    if years else NO_RESULTS),
         )
 
     # Fetch stats from metadata DB when a filter is active
     mp_stats = None
     ministry_stats = None
     stats_text = ""
-    if req.mp_names and len(req.mp_names) == 1:
+    if req.house == 'lok_sabha' and req.content_type=='qa' and req.mp_names and len(req.mp_names) == 1:
         mp_stats = get_mp_stats(req.mp_names[0], top_q=req.top_q or 10)
         if mp_stats:
             stats_text = format_stats_for_llm(mp_stats)
-    elif req.ministry:
+    elif req.house == 'lok_sabha' and req.content_type=='qa' and req.ministry:
         ministry_stats = get_ministry_stats(req.ministry, top_q=req.top_q or 10)
         if ministry_stats:
             stats_text = format_ministry_stats_for_llm(ministry_stats)
@@ -109,6 +130,9 @@ def synthesize(req: SynthesizeRequest) -> SynthesizeResponse:
         items,
         top_n=req.top_n,
         chunks_per_question=req.chunks_per_question,
+        prefer_matches=True,
+        required_years=years,
+        answer_passages_only=source_scope is not None,
     )
 
     if _LOG_CHUNKS:
@@ -118,6 +142,12 @@ def synthesize(req: SynthesizeRequest) -> SynthesizeResponse:
 
     # Build grouped context for LLM (no scores, [Q#] labels)
     evidence_context = retriever.build_context_grouped(groups)
+    coverage = period_coverage(groups, years)
+    scope = coverage_context(coverage)
+    if scope:
+        evidence_context = scope + '\n\n' + evidence_context
+    if source_scope:
+        evidence_context = scope_context(source_scope) + '\n\n' + evidence_context
 
     # Compose full context: stats (if available) + evidence
     if stats_text:
@@ -125,12 +155,19 @@ def synthesize(req: SynthesizeRequest) -> SynthesizeResponse:
     else:
         context = evidence_context
 
-    answer = synthesizer.generate(query=req.query, context=context)
+    try:answer, answer_checks = generate_checked(synthesizer, req.query, context, groups)
+    except GenerationError as error:raise HTTPException(error.status_code,str(error)) from None
+    if validate_citations(answer,len(groups)):
+        raise HTTPException(502,'The AI answer referenced unavailable evidence and was withheld. Try again or use document search.')
     citations = extract_citations(answer, max_n=len(groups))
 
     evidence_groups = [
         EvidenceGroupResponse(
             group_index=g.group_index,
+            house=g.house, date=g.date, source_url=g.source_url,
+            retrieval_method=g.retrieval_method,
+            document_url=g.document_url,
+            content_type=g.content_type,debate_category=g.debate_category,original_pages=g.original_pages,transcript_status=g.transcript_status,
             question_id=g.question_id,
             lok_no=g.lok_no,
             session_no=g.session_no,
@@ -215,4 +252,7 @@ def synthesize(req: SynthesizeRequest) -> SynthesizeResponse:
         total_chunks=len(items),
         mp_stats=mp_stats_response,
         ministry_stats=ministry_stats_response,
+        period_coverage=coverage,
+        source_scope=source_scope,
+        answer_checks=answer_checks,
     )

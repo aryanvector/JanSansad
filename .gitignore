@@ -60,3 +60,16 @@ stats_*.txt
 
 # Test caches
 .pytest_cache/
+
+# JanSansad local datasets, credentials and generated research artifacts
+.env.*
+!.env.example
+data/
+output/
+research/
+tmp/
+/core/
+.sansad-wsl-helper.json
+=5,
+*.log
+*.snapshot

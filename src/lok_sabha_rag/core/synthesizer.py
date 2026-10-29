@@ -16,8 +16,12 @@ def load_prompt(name: str) -> str:
     return path.read_text(encoding="utf-8").strip()
 
 
-def get_system_prompt() -> str:
-    return load_prompt("system.txt")
+def get_system_prompt(include_stats: bool = False) -> str:
+    prompt = load_prompt("system.txt")
+    if not include_stats:
+        prompt = prompt.split("## Using Statistics (MP or Ministry)", 1)[0].rstrip()
+        prompt += "\n\nNo metadata statistics block is supplied. Do not invent ministry/MP question totals, rankings, or a statistics preface. Answer the user's topic directly."
+    return prompt
 
 
 def get_user_prompt(query: str, context: str) -> str:
@@ -45,34 +49,13 @@ def validate_citations(answer: str, evidence_count: int) -> List[str]:
 
 class Synthesizer:
     def __init__(self):
-        from openai import OpenAI
-        self.client = OpenAI()
-        self.model = "gpt-4o-mini"
+        pass
 
     def generate(self, query: str, context: str) -> str:
-        system_prompt = get_system_prompt()
+        has_stats = context.lstrip().startswith(("=== MP STATISTICS (", "=== MINISTRY STATISTICS ("))
+        system_prompt = get_system_prompt(include_stats=has_stats)
         user_prompt = get_user_prompt(query=query, context=context)
 
-        resp = self.client.responses.create(
-            model=self.model,
-            input=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-        )
-
-        text = getattr(resp, "output_text", None)
-        if text:
-            return text.strip()
-
-        try:
-            parts = []
-            for item in resp.output:
-                if item.type == "message":
-                    for c in item.content:
-                        if c.type == "output_text":
-                            parts.append(c.text)
-            return "\n".join(parts).strip()
-        except Exception:
-            raise RuntimeError("Failed to extract text from OpenAI response")
+        from lok_sabha_rag.core.ai_provider import generate,normalize_citation_groups
+        return normalize_citation_groups(generate(system_prompt,user_prompt,max_tokens=4096),'Q')
 

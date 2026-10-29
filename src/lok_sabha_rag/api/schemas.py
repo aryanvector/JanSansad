@@ -1,10 +1,13 @@
 """Pydantic models for API requests and responses."""
 
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from typing import Literal
+from pydantic import BaseModel, Field, field_validator
 
 
 class SearchRequest(BaseModel):
+    content_type: Literal['qa','debate','all'] = 'qa'
+    house: Literal['lok_sabha', 'rajya_sabha', 'both'] = 'lok_sabha'
     query: str = Field(..., min_length=1, description="Search query")
     top_k: int = Field(10, ge=1, le=200, description="Number of results")
     lok: Optional[int] = Field(None, description="Filter by Lok Sabha number")
@@ -12,8 +15,22 @@ class SearchRequest(BaseModel):
     ministry: Optional[str] = Field(None, description="Filter by ministry")
     mp_names: Optional[List[str]] = Field(None, description="Filter by MP name(s) — OR logic")
 
+    @field_validator('query', mode='before')
+    @classmethod
+    def trim_query(cls, value):
+        return value.strip() if isinstance(value, str) else value
+
 
 class EvidenceItemResponse(BaseModel):
+    content_type: str = 'qa'
+    debate_category: Optional[str] = None
+    original_pages: Optional[str] = None
+    transcript_status: Optional[str] = None
+    document_url: Optional[str] = None
+    retrieval_method: str = 'dense'
+    house: str = 'lok_sabha'
+    date: Optional[str] = None
+    source_url: Optional[str] = None
     index: int
     score: float
     chunk_id: str
@@ -39,10 +56,17 @@ class SearchResponse(BaseModel):
 
 
 class SynthesizeRequest(BaseModel):
+    @field_validator('query', mode='before')
+    @classmethod
+    def trim_query(cls, value):
+        return value.strip() if isinstance(value, str) else value
+
+    content_type: Literal['qa','debate','all'] = 'qa'
+    house: Literal['lok_sabha', 'rajya_sabha', 'both'] = 'lok_sabha'
     query: str = Field(..., min_length=1, description="Question to answer")
     top_k: int = Field(15, ge=1, le=200, description="M: total chunks to retrieve from Qdrant")
     top_n: Optional[int] = Field(10, ge=1, le=50, description="N: max unique questions to keep")
-    chunks_per_question: Optional[int] = Field(2, ge=1, le=10, description="C: max leading chunks per question")
+    chunks_per_question: Optional[int] = Field(2, ge=1, le=10, description="C: evidence chunks per question; Q&A keeps the best match plus opening context")
     top_q: Optional[int] = Field(10, ge=1, le=50, description="Q: recent questions in MP stats summary")
     lok: Optional[int] = Field(None, description="Filter by Lok Sabha number")
     session: Optional[int] = Field(None, description="Filter by session number")
@@ -60,6 +84,15 @@ class ChunkDetail(BaseModel):
 
 
 class EvidenceGroupResponse(BaseModel):
+    content_type: str = 'qa'
+    debate_category: Optional[str] = None
+    original_pages: Optional[str] = None
+    transcript_status: Optional[str] = None
+    document_url: Optional[str] = None
+    retrieval_method: str = 'dense'
+    house: str = 'lok_sabha'
+    date: Optional[str] = None
+    source_url: Optional[str] = None
     """A group of chunks from the same parliamentary question."""
     group_index: int
     question_id: Optional[str] = None
@@ -99,6 +132,9 @@ class MinistryStatsResponse(BaseModel):
 
 
 class SynthesizeResponse(BaseModel):
+    answer_checks: Optional[dict] = None
+    period_coverage: Optional[dict] = None
+    source_scope: Optional[dict] = None
     query: str
     answer: str
     citations_used: List[int]

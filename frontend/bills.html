@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/static/navigation-intro.js?v=1"></script>
+<script>if(!window.janSansadInternalNavigation){document.documentElement.classList.add('opening-pending');window.openSansadFallback=setTimeout(function(){document.documentElement.classList.remove('opening-pending');document.getElementById('opening')?.remove();document.querySelector('.container')?.removeAttribute('inert');},6000);}</script>
+<style>html.opening-pending{overflow:hidden}html.opening-pending body{background:#07100c}html.opening-pending .container{visibility:hidden}#opening{display:none}html.opening-pending #opening{display:block;position:fixed;inset:0;z-index:10000;background:#07100c}</style>
+<link rel="preload" as="image" href="/static/JanSansad_Exact_Artwork.svg">
+<link rel="preload" as="image" href="/static/parliament-chamber.webp">
+<script src="/static/opening.js?v=3" defer></script>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bills &amp; Acts — JanSansad | देश की बैठक</title>
+  <script src="/static/theme.js?v=1"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css?v=21"><link rel="stylesheet" href="/static/bills.css?v=2">
+  <link rel="stylesheet" href="/static/workspace.css?v=1">
+  <script src="/static/bills.js?v=6" defer></script>
+  <script src="/static/profiles.js?v=8" defer></script>
+<link rel="stylesheet" href="/static/theme.css?v=1">
+<link rel="stylesheet" href="/static/experience.css?v=1">
+<link rel="stylesheet" href="/static/chamber.css?v=1">
+<link rel="stylesheet" href="/static/jansansad.css?v=4">
+<meta name="description" content="जनसंसद | JanSansad — देश की बैठक (Desh Ki Baithak). Explore parliamentary questions, debates, bills and source-linked AI research.">
+<meta property="og:title" content="जनसंसद | JanSansad — देश की बैठक">
+<meta property="og:description" content="Desh Ki Baithak — AI-powered parliamentary research.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&amp;display=swap">
+</head>
+<body>
+<div id="opening" aria-label="JanSansad opening animation">
+  <div class="opening-paper"></div>
+  <img class="opening-logo" src="/static/JanSansad_Exact_Artwork.svg" alt="JanSansad Parliament logo" width="1536" height="1024">
+  <svg class="opening-veil" width="100%" height="100%" aria-hidden="true">
+    <defs><linearGradient id="opening-shade" x2="0" y2="1"><stop stop-color="#1b3026"/><stop offset="1" stop-color="#030605"/></linearGradient>
+    <mask id="keyhole-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%"><rect width="100%" height="100%" fill="white"/><path id="keyhole" fill="black" d="M -32 -20 A 60 60 0 1 1 32 -20 L 55 126 L -55 126 Z"/></mask></defs>
+    <rect width="100%" height="100%" fill="url(#opening-shade)" mask="url(#keyhole-mask)"/>
+  </svg>
+  <div class="opening-caption"><span>जनसंसद | JanSansad</span><small>देश की बैठक · Desh Ki Baithak</small><span class="opening-rule" aria-hidden="true">◇──</span></div>
+  <button type="button" id="skip-opening">Skip intro <span aria-hidden="true">↗</span></button>
+</div>
+<div class="container bills-container">
+  <header class="header"><img src="/static/JanSansad_Mark.svg" alt="JanSansad parliamentary emblem" class="header-logo">
+    <div class="header-text"><a class="brand-name" href="/"><span lang="hi">जनसंसद</span> | JanSansad</a><p class="subtitle"><span lang="hi">देश की बैठक</span> <span class="tagline-en">Desh Ki Baithak</span></p></div>
+  </header>
+  <nav class="section-nav" aria-label="Project sections"><a href="/">Questions &amp; Debates</a><a href="/bills" aria-current="page">Bills &amp; Acts</a><a href="/ministers">Ministers</a></nav>
+  <main>
+    <section class="bill-intro"><span class="eyebrow">THE LEGISLATIVE LIBRARY</span><h1>One bill. Two Houses.<br><em>A clearer record.</em></h1>
+      <p>Explore introduced bills, recorded passage dates and available Act details. Open a bill to see its timeline and official documents.</p>
+      <p id="bill-coverage" class="coverage-note" aria-live="polite">Loading official catalogue coverage…</p>
+      <p id="bill-ai-status" class="bill-help" aria-live="polite"></p>
+    </section>
+    <nav class="library-switcher" aria-label="Choose a research section"><div class="library-switcher-heading"><span>EXPLORE PARLIAMENT</span><small>Choose your research section</small></div><div class="library-cards"><a class="library-card" href="/#query-input"><span class="guide-number">01 / THE DISCUSSION</span><h2>Questions & debates</h2><p>Search Lok Sabha and Rajya Sabha questions, answers and debates.</p><span class="card-arrow" aria-hidden="true">↗</span></a><a class="library-card" href="/bills" aria-current="page"><span class="guide-number">02 / THE LEGISLATION</span><h2>Bills & Acts</h2><p>Explore bills, legislative milestones and official documents.</p><span class="card-arrow" aria-hidden="true">↗</span></a><a class="library-card" href="/ministers"><span class="guide-number">03 / THE PEOPLE</span><h2>Ministers & portfolios</h2><p>Find ministers and the departments behind government decisions.</p><span class="card-arrow" aria-hidden="true">↗</span></a></div></nav>
+<form id="bill-search" class="bill-filters" role="search">
+      <label class="bill-search-label">Search bills<input id="bill-query" type="search" maxlength="300" placeholder="Bill title, ministry or bill number…"></label>
+      <button type="submit" class="bill-primary">Search</button>
+      <label>Introduced in<select id="bill-origin"><option value="both">Either House</option><option value="lok_sabha">Lok Sabha</option><option value="rajya_sabha">Rajya Sabha</option></select></label>
+      <label>Bill year<select id="bill-year"><option value="">All imported years</option></select></label>
+      <label>Ministry<select id="bill-ministry"><option value="">All ministries</option></select></label>
+      <button type="button" id="bill-reset" class="bill-secondary">Reset filters</button>
+    </form>
+    <div class="bill-tabs" role="group" aria-label="Bill record categories">
+      <button type="button" data-tab="all" aria-pressed="true">All bills <span></span></button>
+      <button type="button" data-tab="introduced" aria-pressed="false">Introduced <span></span></button>
+      <button type="button" data-tab="pending" aria-pressed="false">Pending <span></span></button>
+      <button type="button" data-tab="passed" aria-pressed="false">Passed <span></span></button>
+      <button type="button" data-tab="acts" aria-pressed="false">Acts &amp; assent <span></span></button>
+    </div>
+    <div id="passed-filter" class="passed-filter" hidden><label>Passage dates recorded in
+      <select id="bill-passage"><option value="both">Both Houses</option><option value="lok_sabha">Lok Sabha</option><option value="rajya_sabha">Rajya Sabha</option></select>
+    </label></div>
+    <p id="bill-explanation" class="bill-help"></p>
+    <div class="bill-results-heading"><h2 id="bill-result-count" aria-live="polite">Bills</h2><span>Newest introduction first</span></div>
+    <div id="bill-error" class="bill-error" role="alert" hidden></div>
+    <section id="bill-results" aria-label="Bill results" aria-busy="true"></section>
+    <nav class="bill-pagination" aria-label="Results pages"><button id="bill-prev" type="button" class="bill-secondary">Previous</button><span id="bill-page" aria-live="polite"></span><button id="bill-next" type="button" class="bill-secondary">Next</button></nav>
+    <aside class="bill-footnote"><strong>Read the status carefully.</strong> Introduction, passage in one House, passage in both Houses and Presidential assent are separate events. Money Bills follow a different Rajya Sabha procedure. Missing dates mean “not supplied in this snapshot”, not that the event never occurred. Document links are supplied by the official catalogue and may occasionally be unavailable.</aside>
+    <p class="bill-source">Official sources: <a href="https://sansad.in/ls/legislation/bills" target="_blank" rel="noopener noreferrer">Lok Sabha Bills</a> · <a href="https://sansad.in/rs/legislation/bills" target="_blank" rel="noopener noreferrer">Rajya Sabha Bills</a></p>
+  </main><footer class="footer"><div class="developer-credit"><span>Developed by <strong>Aryan Sen</strong></span><div class="developer-socials" aria-label="Aryan Sen social profiles"><a href="https://www.instagram.com/nvn.aryxn/" target="_blank" rel="noopener noreferrer" aria-label="Aryan Sen on Instagram (opens in a new tab)" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.1"/></svg></a><a href="https://github.com/aryanvector" target="_blank" rel="noopener noreferrer" aria-label="Aryan Sen on GitHub (opens in a new tab)" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 6.82c.85 0 1.71.12 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></a><a href="https://www.linkedin.com/in/aryan1029/" target="_blank" rel="noopener noreferrer" aria-label="Aryan Sen on LinkedIn (opens in a new tab)" title="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 3a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM3.4 9h3.6v12H3.4V9Zm5.8 0h3.5v1.6h.1c.5-.9 1.7-1.9 3.5-1.9 3.7 0 4.4 2.4 4.4 5.6V21H17v-6c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.2V9Z"/></svg></a></div></div></footer>
+</div>
+</body></html>

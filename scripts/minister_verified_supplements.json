@@ -1,0 +1,19 @@
+[
+  {
+    "jurisdiction_id": "chhattisgarh",
+    "name": "Shri Vishnu Deo Sai",
+    "rank": "Chief Minister",
+    "aliases": [
+      "Vishnu Dev Sai",
+      "Vishnudeo Sai",
+      "विष्णु देव साय"
+    ],
+    "portfolios": [],
+    "source_url": "https://yuvaayog.cg.gov.in/en/cm-corner.php",
+    "as_of": null,
+    "fetched_at": "2026-10-25T12:58:36.793297+00:00",
+    "source_sha256": "983366f6bb5c4201d5ea52b555ac635ddfae755d5d35e42e2ab229b15fffa744",
+    "source_excerpt": "SHRI VISHNU DEO SAI : Chief Minister",
+    "scope_note": "Only the Chief Minister has been verified from this official government page. The remaining state cabinet roster and detailed portfolios are not yet imported."
+  }
+]

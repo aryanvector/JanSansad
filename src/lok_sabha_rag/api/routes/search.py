@@ -2,7 +2,8 @@
 
 import os
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from lok_sabha_rag.core.relevance import relevant_items, NO_RESULTS
 
 from lok_sabha_rag.core.retriever import Retriever, EvidenceItem
 from lok_sabha_rag.api.schemas import SearchRequest, SearchResponse, EvidenceItemResponse
@@ -51,7 +52,13 @@ def search(req: SearchRequest) -> SearchResponse:
         session=req.session,
         ministry=req.ministry,
         mp_names=req.mp_names,
+        house=req.house,
+        content_type=req.content_type,
     )
+
+    items = relevant_items(req.query, items)
+    if not items:
+        raise HTTPException(status_code=404, detail=NO_RESULTS)
 
     if _LOG_CHUNKS:
         _log_retrieved_chunks(req.query, items, req.mp_names)
@@ -59,6 +66,10 @@ def search(req: SearchRequest) -> SearchResponse:
     results = [
         EvidenceItemResponse(
             index=i,
+            house=item.house, date=item.date, source_url=item.source_url,
+            retrieval_method=item.retrieval_method,
+            document_url=item.document_url,
+            content_type=item.content_type,debate_category=item.debate_category,original_pages=item.original_pages,transcript_status=item.transcript_status,
             score=item.score,
             chunk_id=item.chunk_id,
             question_id=item.question_id,

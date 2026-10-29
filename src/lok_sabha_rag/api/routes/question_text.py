@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator, field_validator
 
 from lok_sabha_rag.core.retriever import Retriever
 
@@ -15,11 +15,35 @@ _retriever = Retriever()
 
 class QuestionTextRequest(BaseModel):
     question_id: str | None = Field(None, description="Stable composite key (preferred)")
-    lok_no: int | None = None
-    session_no: int | None = None
-    ques_no: int | None = None
+    lok_no: int | None = Field(None, ge=1)
+    session_no: int | None = Field(None, ge=1)
+    ques_no: int | None = Field(None, ge=1)
     type: str | None = Field(None, description="'Starred' or 'Unstarred' — disambiguates overlapping ques_no ranges")
     c: int = Field(1, ge=1, le=10, description="Number of leading chunks to fetch (chunk_index 0..c-1)")
+
+    @field_validator('question_id', mode='before')
+    @classmethod
+    def trim_identity(cls, value):
+        if isinstance(value, str):
+            value = value.strip()
+            if not value:
+                raise ValueError('question_id must not be blank')
+        return value
+
+    @field_validator('type', mode='before')
+    @classmethod
+    def normalize_type(cls, value):
+        if value is None:
+            return value
+        if not isinstance(value, str) or value.strip().upper() not in ('STARRED', 'UNSTARRED'):
+            raise ValueError('type must be STARRED or UNSTARRED')
+        return value.strip().upper()
+
+    @model_validator(mode='after')
+    def require_identity(self):
+        if not self.question_id and any(v is None for v in (self.lok_no, self.session_no, self.ques_no, self.type)):
+            raise ValueError('Provide question_id, or lok_no, session_no, ques_no and type to identify one question')
+        return self
 
 
 class QuestionTextResponse(BaseModel):

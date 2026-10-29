@@ -30,7 +30,7 @@ from fastembed import TextEmbedding; \
 TextEmbedding('BAAI/bge-small-en-v1.5')"
 
 # Make entrypoint executable
-RUN chmod +x scripts/docker-entrypoint.sh
+RUN sed -i 's/\r$//' scripts/docker-entrypoint.sh && chmod +x scripts/docker-entrypoint.sh
 
 EXPOSE 8000
 

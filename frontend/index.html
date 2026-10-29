@@ -1,33 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/static/navigation-intro.js?v=1"></script>
+<script>if(!window.janSansadInternalNavigation){document.documentElement.classList.add('opening-pending');window.openSansadFallback=setTimeout(function(){document.documentElement.classList.remove('opening-pending');document.getElementById('opening')?.remove();document.querySelector('.container')?.removeAttribute('inert');},6000);}</script>
+<style>html.opening-pending{overflow:hidden}html.opening-pending body{background:#07100c}html.opening-pending .container{visibility:hidden}#opening{display:none}html.opening-pending #opening{display:block;position:fixed;inset:0;z-index:10000;background:#07100c}</style>
+<link rel="preload" as="image" href="/static/JanSansad_Exact_Artwork.svg">
+<link rel="preload" as="image" href="/static/parliament-chamber.webp">
+<script src="/static/opening.js?v=3" defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lok Sabha Q&A Search</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>JanSansad — Parliamentary Research | देश की बैठक</title>
+    <script src="/static/theme.js?v=1"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/styles.css?v=16">
+    <link rel="stylesheet" href="/static/styles.css?v=22">
+    <link rel="stylesheet" href="/static/bills.css?v=1">
+    <link rel="stylesheet" href="/static/workspace.css?v=3">
+<link rel="stylesheet" href="/static/theme.css?v=1">
+    <link rel="stylesheet" href="/static/experience.css?v=1">
+    <link rel="stylesheet" href="/static/chamber.css?v=1">
+<link rel="stylesheet" href="/static/jansansad.css?v=4">
+<meta name="description" content="जनसंसद | JanSansad — देश की बैठक (Desh Ki Baithak). Explore parliamentary questions, debates, bills and source-linked AI research.">
+<meta property="og:title" content="जनसंसद | JanSansad — देश की बैठक">
+<meta property="og:description" content="Desh Ki Baithak — AI-powered parliamentary research.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&amp;display=swap">
 </head>
-<body>
+<body class="home-page">
+<div id="opening" aria-label="JanSansad opening animation">
+  <div class="opening-paper"></div>
+  <img class="opening-logo" src="/static/JanSansad_Exact_Artwork.svg" alt="JanSansad Parliament logo" width="1536" height="1024">
+  <svg class="opening-veil" width="100%" height="100%" aria-hidden="true">
+    <defs><linearGradient id="opening-shade" x2="0" y2="1"><stop stop-color="#1b3026"/><stop offset="1" stop-color="#030605"/></linearGradient>
+    <mask id="keyhole-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="100%" height="100%"><rect width="100%" height="100%" fill="white"/><path id="keyhole" fill="black" d="M -32 -20 A 60 60 0 1 1 32 -20 L 55 126 L -55 126 Z"/></mask></defs>
+    <rect width="100%" height="100%" fill="url(#opening-shade)" mask="url(#keyhole-mask)"/>
+  </svg>
+  <div class="opening-caption"><span>जनसंसद | JanSansad</span><small>देश की बैठक · Desh Ki Baithak</small><span class="opening-rule" aria-hidden="true">◇──</span></div>
+  <button type="button" id="skip-opening">Skip intro <span aria-hidden="true">↗</span></button>
+</div>
     <div class="container">
         <header class="header">
-            <img src="/static/OpenSansad_Logo.svg" alt="OpenSansad" class="header-logo">
+            <img src="/static/JanSansad_Mark.svg" alt="JanSansad parliamentary emblem" class="header-logo">
             <div class="header-text">
-                <h1>Lok Sabha Questions & Answers</h1>
-                <p class="subtitle">Search across 87,000+ questions from 2019 to 2026</p>
+                <a class="brand-name" href="/"><span lang="hi">जनसंसद</span> | JanSansad</a>
+                <p class="subtitle"><span lang="hi">देश की बैठक</span> <span class="tagline-en">Desh Ki Baithak</span></p>
             </div>
         </header>
 
+        <nav class="section-nav" aria-label="Project sections"><a href="/" aria-current="page">Questions &amp; Debates</a><a href="/bills">Bills &amp; Acts</a><a href="/ministers">Ministers</a></nav>
         <main class="main">
-            <form id="search-form" class="search-form">
+            <section class="research-intro cinematic-hero" aria-labelledby="research-title">
+                <img class="hero-scene" src="/static/parliament-chamber.webp" alt="Interior of India's parliamentary chamber" fetchpriority="high" width="2752" height="1536">
+                <div class="hero-shade" aria-hidden="true"></div>
+                <div class="hero-bottom">
+                  <div class="hero-heading"><p class="eyebrow">जनसंसद | JanSansad · देश की बैठक</p><h1 id="research-title">Understand Parliament.<br><em>Empower Democracy.</em></h1></div>
+                  <div class="hero-action"><p class="intro-copy">Explore parliamentary questions, government responses, and public policy through intelligent AI-powered search.</p><a class="explore-cta" href="#research-desk">Explore Parliament <span aria-hidden="true">↗</span></a></div>
+                </div>
+                <a class="scroll-cue" href="#research-desk" aria-label="Scroll to parliamentary search">SCROLL TO DISCOVER <span aria-hidden="true">↓</span></a>
+            </section>
+            <div id="research-desk" class="desk-heading"><p class="eyebrow">01 / THE RESEARCH DESK</p><h2>Ask a better question.<br><em>Find the original answer.</em></h2><p>Two Houses. A public record. Evidence you can follow.</p></div>
+            <nav class="library-switcher" aria-label="Choose a research section"><div class="library-switcher-heading"><span>EXPLORE PARLIAMENT</span><small>Choose your research section</small></div><div class="library-cards"><a class="library-card" href="#query-input" aria-current="page"><span class="guide-number">01 / THE DISCUSSION</span><h2>Questions & debates</h2><p>Search Lok Sabha and Rajya Sabha questions, answers and debates.</p><span class="card-arrow" aria-hidden="true">↗</span></a><a class="library-card" href="/bills"><span class="guide-number">02 / THE LEGISLATION</span><h2>Bills & Acts</h2><p>Explore bills, legislative milestones and official documents.</p><span class="card-arrow" aria-hidden="true">↗</span></a><a class="library-card" href="/ministers"><span class="guide-number">03 / THE PEOPLE</span><h2>Ministers & portfolios</h2><p>Find ministers and the departments behind government decisions.</p><span class="card-arrow" aria-hidden="true">↗</span></a></div></nav>
+<form id="search-form" class="search-form">
+                <label class="search-label" for="query-input">YOUR RESEARCH STARTS WITH A QUESTION</label>
                 <div class="search-box">
                     <div class="input-wrapper">
                         <input
                             type="text"
                             id="query-input"
                             name="query"
-                            placeholder="Ask about health policy, infrastructure, education... (type mp: or min: to filter by MP or Ministry)"
+                            placeholder="What has Parliament said about…?"
                             autocomplete="off"
                         >
                         <div id="mp-dropdown" class="mp-dropdown"></div>
@@ -41,12 +82,26 @@
                 </div>
 
                 <div class="options">
+                    <label class="house-control" for="house-select">House
+                        <select id="house-select">
+                            <option value="lok_sabha">Lok Sabha</option>
+                            <option value="rajya_sabha">Rajya Sabha</option>
+                            <option value="both">Both Houses</option>
+                        </select>
+                    </label>
+                    <label class="house-control" for="content-select">Content
+                        <select id="content-select">
+                            <option value="qa">Questions &amp; answers</option>
+                            <option value="debate">Debates</option>
+                            <option value="all">All records</option>
+                        </select>
+                    </label>
                     <div class="mode-toggle">
                         <label class="toggle">
-                            <input type="checkbox" id="ai-mode" checked>
+                            <input type="checkbox" id="ai-mode" aria-label="Generate an AI answer" checked>
                             <span class="toggle-slider"></span>
                         </label>
-                        <span class="toggle-label">AI-synthesized answer</span>
+                        <span class="toggle-label">AI answer</span>
                     </div>
 
                     <button type="button" id="settings-btn" class="settings-btn" title="Retrieval settings">
@@ -56,7 +111,16 @@
                         </svg>
                     </button>
                 </div>
+                <p class="search-help">Search by topic, or type <kbd>mp:</kbd> for a member and <kbd>min:</kbd> for a ministry.</p>
+                <p id="search-feedback" class="search-feedback" role="status" aria-live="polite"></p>
             </form>
+            <div class="explore-prompts" aria-label="Example topics"><span>TRY A TOPIC</span><button type="button" data-topic="Railway safety">Railway safety <span aria-hidden="true">↗</span></button><button type="button" data-topic="Education policy">Education policy <span aria-hidden="true">↗</span></button><button type="button" data-topic="Climate change">Climate change <span aria-hidden="true">↗</span></button></div>
+            <details class="coverage-details"><summary>Data coverage &amp; AI availability</summary>
+            <p id="coverage-note" class="coverage-note" aria-live="polite"></p>
+            <p id="ai-provider-status" class="coverage-note" aria-live="polite"></p>
+            <p id="debate-index-status" class="coverage-note" aria-live="polite"></p>
+            </details>
+
 
             <div id="active-filters" class="active-filters"></div>
 
@@ -92,8 +156,8 @@
         </main>
 
         <footer class="footer">
-            <p>Data sourced from <a href="https://sansad.in/ls/questions/questions-and-answers" target="_blank">sansad.in</a></p>
-        </footer>
+            <p>जनसंसद | JanSansad · देश की बैठक · Desh Ki Baithak · Independent research project</p><p>Records from <a href="https://sansad.in" target="_blank" rel="noopener noreferrer">Digital Sansad ↗</a> · Always verify important claims against the original source.</p>
+        <div class="developer-credit"><span>Developed by <strong>Aryan Sen</strong></span><div class="developer-socials" aria-label="Aryan Sen social profiles"><a href="https://www.instagram.com/nvn.aryxn/" target="_blank" rel="noopener noreferrer" aria-label="Aryan Sen on Instagram (opens in a new tab)" title="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.1"/></svg></a><a href="https://github.com/aryanvector" target="_blank" rel="noopener noreferrer" aria-label="Aryan Sen on GitHub (opens in a new tab)" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.58 9.58 0 0 1 12 6.82c.85 0 1.71.12 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></a><a href="https://www.linkedin.com/in/aryan1029/" target="_blank" rel="noopener noreferrer" aria-label="Aryan Sen on LinkedIn (opens in a new tab)" title="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.2 3a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4ZM3.4 9h3.6v12H3.4V9Zm5.8 0h3.5v1.6h.1c.5-.9 1.7-1.9 3.5-1.9 3.7 0 4.4 2.4 4.4 5.6V21H17v-6c0-1.4 0-3.2-2-3.2s-2.3 1.5-2.3 3.1V21H9.2V9Z"/></svg></a></div></div></footer>
     </div>
 
     <div id="modal" class="modal">
@@ -129,7 +193,7 @@
                 </div>
                 <div class="settings-field">
                     <label for="cpq-input">Chunks/Q (C)</label>
-                    <p class="settings-desc">Leading chunks per question (skips trailing annexures)</p>
+                    <p class="settings-desc">Evidence passages per record; scoped Q&amp;A prioritises matching text</p>
                     <input type="number" id="cpq-input" value="1" min="1" max="10" step="1">
                 </div>
                 <div class="settings-field">
@@ -142,6 +206,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="/static/app.js?v=16"></script>
+    <script src="/static/coverage.js?v=2"></script>
+    <script src="/static/app.js?v=32"></script>
+    <script src="/static/profiles.js?v=8"></script>
+    <script src="/static/workspace.js?v=1"></script>
 </body>
 </html>
