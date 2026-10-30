@@ -20,7 +20,7 @@
 
 Developed by **[Aryan Sen](https://github.com/aryanvector)**
 
-[Watch the demo](#project-introduction-video) · [Features](#features) · [Installation](#installation-one-step-at-a-time) · [Workflow](#detailed-workflow) · [Architecture](#system-architecture) · [Troubleshooting](#troubleshooting)
+[Video demo](#project-introduction-video) · [Features](#features) · [Installation](#installation-one-step-at-a-time) · [Workflow](#detailed-workflow) · [Architecture](#system-architecture) · [Troubleshooting](#troubleshooting)
 
 </div>
 
@@ -34,9 +34,11 @@ It extends [Sammit Jain's lok-sabha-rag](https://github.com/sammitjain/lok-sabha
 
 A **1 minute 53 second** introduction, narrated by **Aryan Sen**, covering the platform, bill exploration, evidence-linked answers, animated workflow and system architecture. The video includes captions, an English translation of the Hindi opening, and developer contact links.
 
-[![Watch the JanSansad project introduction](docs/assets/jansansad-video-preview.jpg)](https://github.com/aryanvector/JanSansad/blob/main/docs/media/jansansad-client-pitch.mp4)
+[![Download and play the JanSansad project introduction](docs/assets/jansansad-video-preview.jpg)](https://raw.githubusercontent.com/aryanvector/JanSansad/main/docs/media/jansansad-client-pitch.mp4)
 
-**[Open the video](https://github.com/aryanvector/JanSansad/blob/main/docs/media/jansansad-client-pitch.mp4)** · **[Download MP4](https://raw.githubusercontent.com/aryanvector/JanSansad/main/docs/media/jansansad-client-pitch.mp4)** · [Subtitles: SRT](docs/media/jansansad-client-pitch.srt) · [Subtitles: WebVTT](docs/media/jansansad-client-pitch.vtt)
+**[Download and play the video (MP4, 17.6 MB)](https://raw.githubusercontent.com/aryanvector/JanSansad/main/docs/media/jansansad-client-pitch.mp4)** · [Subtitles: SRT](docs/media/jansansad-client-pitch.srt) · [Subtitles: WebVTT](docs/media/jansansad-client-pitch.vtt)
+
+Click the preview image or the download link, then open the saved MP4 in your video player. GitHub's repository file-preview page does not display this large video, so these links go directly to the file.
 
 The product footage reflects the recorded local demo and its snapshot-based coverage; it is not a live parliamentary feed. Captions are already visible in the video; the separate subtitle files are provided for reuse.
 
