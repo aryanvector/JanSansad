@@ -1,0 +1,133 @@
+WEBVTT
+
+00:00:00.930 --> 00:00:03.240
+Parliament ke bill ki headlines toh padh li.
+You have read the headlines about a bill.
+
+00:00:03.660 --> 00:00:05.220
+Par bill mein actually likha kya hai,
+But what does the bill actually say?
+
+00:00:05.220 --> 00:00:06.420
+kabhi woh socha?
+Have you ever wondered?
+
+00:00:06.860 --> 00:00:07.940
+Meet JanSansad.
+
+00:00:07.940 --> 00:00:09.500
+Desh Ki Baithak.
+
+00:00:09.500 --> 00:00:12.360
+A clearer way to explore Parliament.
+
+00:00:12.400 --> 00:00:15.360
+Explore Lok Sabha and Rajya Sabha questions,
+
+00:00:15.360 --> 00:00:18.960
+government responses and available debate records.
+
+00:00:19.260 --> 00:00:21.760
+Search by topic or narrow down your research
+
+00:00:21.760 --> 00:00:24.700
+using member and ministry filters.
+
+00:00:24.700 --> 00:00:27.740
+Browse a catalog of 4,200 bill
+
+00:00:27.740 --> 00:00:31.240
+records spanning from the year 2009 to
+
+00:00:31.240 --> 00:00:32.800
+2026.
+
+00:00:33.180 --> 00:00:36.660
+Explore recorded milestones, identified presenters
+
+00:00:36.660 --> 00:00:39.840
+and available official document links.
+
+00:00:40.340 --> 00:00:43.460
+Ask in plain English, JanSansad retrieves relevant
+
+00:00:43.460 --> 00:00:46.940
+parliamentary evidence and can generate an AI-assisted
+
+00:00:46.940 --> 00:00:49.100
+answer with citations.
+
+00:00:49.500 --> 00:00:52.200
+Open the source record and check the original
+
+00:00:52.200 --> 00:00:53.600
+document with yourself.
+
+00:00:54.140 --> 00:00:57.420
+Behind each search, the system plans the scope,
+
+00:00:57.580 --> 00:01:00.680
+retrieves passages and checks the relevance of the
+
+00:01:00.680 --> 00:01:01.400
+answer.
+
+00:01:01.400 --> 00:01:03.540
+When no relevant evidence is
+
+00:01:04.120 --> 00:01:07.600
+accepted, it stops instead of generating an unsupported
+
+00:01:07.600 --> 00:01:09.000
+or random answer.
+
+00:01:09.000 --> 00:01:12.160
+The web interface connects to a Python backend
+
+00:01:12.160 --> 00:01:14.300
+FastAPI service.
+
+00:01:14.580 --> 00:01:17.840
+Qdrant supports vector Retrieval, SQLite
+
+00:01:17.840 --> 00:01:19.800
+and JSON hold catalogs.
+
+00:01:20.050 --> 00:01:23.120
+While Gemini generates from selected evidence,
+
+00:01:23.120 --> 00:01:25.720
+Docker packages the services.
+
+00:01:26.000 --> 00:01:29.060
+Citizens can explore parliamentary information.
+
+00:01:29.340 --> 00:01:32.100
+Civil service aspirant can find source material for
+
+00:01:32.100 --> 00:01:35.480
+polity, governance and public policy.
+
+00:01:35.780 --> 00:01:38.780
+Coverage is snapshot based and important claims should
+
+00:01:38.780 --> 00:01:40.220
+be always verified.
+
+00:01:40.700 --> 00:01:41.500
+JanSansad.
+
+00:01:41.500 --> 00:01:42.900
+developed by Aryan.
+
+00:01:42.900 --> 00:01:45.680
+Explore the project on GitHub and connect with
+
+00:01:45.680 --> 00:01:47.720
+me on LinkedIn or Instagram.
+
+00:01:47.840 --> 00:01:49.200
+The links are on the screen.
+
+00:01:49.360 --> 00:01:50.060
+Thank you.

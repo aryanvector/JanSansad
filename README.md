@@ -20,7 +20,7 @@
 
 Developed by **[Aryan Sen](https://github.com/aryanvector)**
 
-[Features](#features) · [Installation](#installation-one-step-at-a-time) · [Workflow](#detailed-workflow) · [Architecture](#system-architecture) · [Troubleshooting](#troubleshooting)
+[Watch the demo](#project-introduction-video) · [Features](#features) · [Installation](#installation-one-step-at-a-time) · [Workflow](#detailed-workflow) · [Architecture](#system-architecture) · [Troubleshooting](#troubleshooting)
 
 </div>
 
@@ -29,6 +29,16 @@ Developed by **[Aryan Sen](https://github.com/aryanvector)**
 JanSansad is an AI-assisted research platform for Indian parliamentary records. Search imported Lok Sabha and Rajya Sabha questions, explore available debate text and bill records, and generate explanations linked to retrieved evidence.
 
 It extends [Sammit Jain's lok-sabha-rag](https://github.com/sammitjain/lok-sabha-rag) with cross-House integrations, bills and minister interfaces, scope-aware retrieval, answer checks and a bilingual responsive frontend. Original MIT attribution is preserved.
+
+## Project introduction video
+
+A **1 minute 53 second** introduction, narrated by **Aryan Sen**, covering the platform, bill exploration, evidence-linked answers, animated workflow and system architecture. The video includes captions, an English translation of the Hindi opening, and developer contact links.
+
+[![Watch the JanSansad project introduction](docs/assets/jansansad-video-preview.jpg)](https://github.com/aryanvector/JanSansad/blob/main/docs/media/jansansad-client-pitch.mp4)
+
+**[Open the video](https://github.com/aryanvector/JanSansad/blob/main/docs/media/jansansad-client-pitch.mp4)** · **[Download MP4](https://raw.githubusercontent.com/aryanvector/JanSansad/main/docs/media/jansansad-client-pitch.mp4)** · [Subtitles: SRT](docs/media/jansansad-client-pitch.srt) · [Subtitles: WebVTT](docs/media/jansansad-client-pitch.vtt)
+
+The product footage reflects the recorded local demo and its snapshot-based coverage; it is not a live parliamentary feed. Captions are already visible in the video; the separate subtitle files are provided for reuse.
 
 ## Features
 
